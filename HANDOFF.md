@@ -19,6 +19,7 @@ Features that exist and must keep working:
 - English / Spanish toggle (EN, ES). Default: Spanish if the browser's first language starts with "es", otherwise English. The choice is remembered (localStorage, wrapped in try/catch).
 - Theme: follows the browser/OS setting; toggle button overrides and is remembered. Dark = true black background with gruvbox colours; light = gruvbox light (cream). If no preference can be detected the page falls back to LIGHT (decision: recruiters and academics mostly read on light systems). This fallback is done in CSS (`prefers-color-scheme`), so it works without JavaScript.
 - PDF links: only the PDFs of the currently selected language are shown (on the landing cards and at the top of each view). Switching language swaps them.
+- Topic filter (Full CV only): a row of topic buttons (AI, data science, teaching, neuroscience, AI ethics/law/safety, mathematics & optimization, programming). Clicking one shows only the items whose text matches that topic's terms, opens the matching sections, hides the others, shows "n of m items" per section and highlights the matched words (bold with a light underline). Clicking it again, or "Show everything", restores the previous view, including which sections were open. The choice survives a language switch and is cleared when leaving the CV view. Topics and their search terms are in `TOPICS` in `tools/build_site.py`; the build prints the number of matching items per topic for both languages (they should be equal).
 - "Back to top" button: bottom-right, appears after scrolling about 700 px, on every view; moves focus to the page title; respects reduced motion.
 - Accessibility: section headers are real buttons with `aria-expanded`, panels are regions, keyboard focus is visible, reduced-motion is respected, responsive down to phone width.
 
@@ -59,6 +60,7 @@ To change wording or design: hand-written text lives in `tools/build_site.py` (l
 ### Hand-written text (edit in `tools/build_site.py`)
 - `SUMM` (CV section highlights), `RSUMM` (résumé section highlights), `TITLES`, `RTITLES`
 - `HOME` (landing headline, paragraph, card descriptions), `RSUB` and `CVSUB` (subtitle lines)
+- `TOPICS` (topic button labels and the terms each topic matches)
 - UI labels (nav, buttons, "Back to top", download links) are in `tools/template.html`, object `UI`.
 
 ## Rules and decisions to keep
