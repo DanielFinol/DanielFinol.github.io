@@ -12,9 +12,9 @@
 </script>
 <style>
 /* Light is the default when no browser/OS preference can be detected; a dark system setting switches to dark. */
-:root{--bg:#fbf1c7;--fg:#3c3836;--muted:#665c54;--rule:#d5c4a1;--accent:#af3a03;--accent2:#427b58;--hover:#f2e5bc;--focus:#b57614;color-scheme:light}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#000;--fg:#ebdbb2;--muted:#a89984;--rule:#3c3836;--accent:#fe8019;--accent2:#8ec07c;--hover:#12100f;--focus:#fabd2f;color-scheme:dark}}
-:root[data-theme=dark]{--bg:#000;--fg:#ebdbb2;--muted:#a89984;--rule:#3c3836;--accent:#fe8019;--accent2:#8ec07c;--hover:#12100f;--focus:#fabd2f;color-scheme:dark}
+:root{--bg:#fbf1c7;--fg:#3c3836;--muted:#665c54;--rule:#d5c4a1;--accent:#af3a03;--accent2:#427b58;--hover:#f2e5bc;--focus:#b57614;--hl:rgba(215,153,33,.32);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#000;--fg:#ebdbb2;--muted:#a89984;--rule:#3c3836;--accent:#fe8019;--accent2:#8ec07c;--hover:#12100f;--focus:#fabd2f;--hl:rgba(250,189,47,.24);color-scheme:dark}}
+:root[data-theme=dark]{--bg:#000;--fg:#ebdbb2;--muted:#a89984;--rule:#3c3836;--accent:#fe8019;--accent2:#8ec07c;--hover:#12100f;--focus:#fabd2f;--hl:rgba(250,189,47,.24);color-scheme:dark}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--fg);font:18px/1.65 "Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;transition:background .2s,color .2s}
@@ -88,6 +88,15 @@ li ul.in{padding:.3rem 0 .2rem}
 li ul.in li{padding:.3rem 0 .3rem 1.25rem}
 li ul.in li::before{top:.85rem;width:.34rem;height:.34rem;background:none;border:1.5px solid var(--accent2);border-radius:50%}
 sup{font-size:.7em;line-height:0}
+.topics{padding:.75rem 0 1.25rem}
+.topics .lab{margin:0 0 .6rem;font-size:.8rem;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.chip{background:transparent;color:var(--fg);border:1px solid var(--rule);border-radius:999px;padding:.4rem .9rem;font-size:.85rem;line-height:1.2;cursor:pointer;transition:border-color .15s,color .15s,background .15s}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.fstat{margin:.75rem 0 0;font-size:.85rem;color:var(--muted);min-height:1.2em}
+.fstat .lnk{margin-left:.5rem}
+mark.hl{background:none;color:inherit;font-weight:700;box-shadow:inset 0 -.42em 0 var(--hl)}
 .totop{position:fixed;right:max(1rem,env(safe-area-inset-right));bottom:max(1rem,env(safe-area-inset-bottom));background:var(--bg);color:var(--fg);border:1px solid var(--rule);border-radius:5px;padding:.55rem .9rem;font-size:.875rem;line-height:1.2;cursor:pointer;opacity:0;visibility:hidden;transition:opacity .2s,visibility 0s .2s,border-color .15s}
 .totop.show{opacity:1;visibility:visible;transition:opacity .2s,border-color .15s}
 .totop:hover{border-color:var(--accent);color:var(--accent)}
@@ -141,12 +150,16 @@ var UI={
      title:{home:'Computer & Data Scientist',resume:'Résumé',cv:'Curriculum vitae'},
      items:function(n){return n+(n===1?' item':' items')},
      light:'Light mode',dark:'Dark mode',expand:'Expand all',collapse:'Collapse all',
-     top:'Back to top',pdf:'Download PDF',dl:{resume:'Download this résumé (PDF)',cv:'Download the full CV (PDF)'}},
+     top:'Back to top',pdf:'Download PDF',dl:{resume:'Download this résumé (PDF)',cv:'Download the full CV (PDF)'},
+     topics:'Show only items about:',of:function(n,t){return n+' of '+t+(t===1?' item':' items')},
+     showing:function(n,x){return 'Showing '+n+(n===1?' item':' items')+' about “'+x+'”.'},showAll:'Show everything'},
  es:{nav:{home:'Inicio',resume:'CV resumido',cv:'CV completo'},
      title:{home:'Científico de Computación y Datos',resume:'CV resumido',cv:'Currículum vitae'},
      items:function(n){return n+(n===1?' elemento':' elementos')},
      light:'Modo claro',dark:'Modo oscuro',expand:'Expandir todo',collapse:'Contraer todo',
-     top:'Volver arriba',pdf:'Descargar PDF',dl:{resume:'Descargar este CV resumido (PDF)',cv:'Descargar el CV completo (PDF)'}}
+     top:'Volver arriba',pdf:'Descargar PDF',dl:{resume:'Descargar este CV resumido (PDF)',cv:'Descargar el CV completo (PDF)'},
+     topics:'Mostrar solo lo relacionado con:',of:function(n,t){return n+' de '+t+(t===1?' elemento':' elementos')},
+     showing:function(n,x){return 'Mostrando '+n+(n===1?' elemento':' elementos')+' sobre «'+x+'».'},showAll:'Mostrar todo'}
 };
 var store={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 var lang=store.get('lang');
@@ -159,15 +172,48 @@ var dq=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):null;
 function theme(){return root.dataset.theme||(dq&&dq.matches?'dark':'light')}
 function route(){var h=location.hash.replace('#','');return h==='cv'||h==='resume'?h:'home'}
 function esc(s){return s.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
-function fmt(s){return esc(s).replace(/([^]*)/g,'<a href="$1" target="_blank" rel="noopener">').replace(//g,'</a>').replace(//g,'<b>').replace(//g,'</b>').replace(//g,'<i>').replace(//g,'</i>').replace(//g,'<sup>').replace(//g,'</sup>')}
+function fmt(s){return esc(s).replace(/([^]*)/g,'<a href="$1" target="_blank" rel="noopener">').replace(//g,'</a>').replace(//g,'<b>').replace(//g,'</b>').replace(//g,'<i>').replace(//g,'</i>').replace(//g,'<sup>').replace(//g,'</sup>').replace(/\uE00A/g,'<mark class="hl">').replace(/\uE00B/g,'</mark>')}
 function li(t){
  var p=t.split('\n'),subs=[],notes=[];
  p.slice(1).forEach(function(x){if(x.charAt(0)==='')subs.push(x.slice(1));else notes.push(x)});
  return '<li>'+fmt(p[0])+notes.map(function(x){return '<span class="subl">'+fmt(x)+'</span>'}).join('')+
   (subs.length?'<ul class="in">'+subs.map(function(x){return '<li>'+fmt(x)+'</li>'}).join('')+'</ul>':'')+'</li>';
 }
+/* Topic filter (full CV only). Terms come from TOPICS in build_site.py. */
+var topic=null,saved=null;
+var TOP=(D.topics||[]).map(function(T){
+ var cs=null;
+ if(T.cs.length){try{cs=new RegExp('(?<![A-Za-zÀ-ÿ])(?:'+T.cs.join('|')+')(?![A-Za-zÀ-ÿ])','g')}catch(e){cs=new RegExp('\\b(?:'+T.cs.join('|')+')\\b','g')}}
+ return {key:T.key,en:T.en,es:T.es,ci:new RegExp(T.ci.join('|'),'gi'),hw:new RegExp('(?:'+T.ci.join('|')+')[A-Za-zÀ-ÿ]*','gi'),cs:cs};
+});
+function topicOf(k){for(var i=0;i<TOP.length;i++)if(TOP[i].key===k)return TOP[i];return null}
+function plain(t){return t.replace(/[^]*/g,' ').replace(/[-]/g,'')}
+function hit(t,T){var p=plain(t);return p.search(T.ci)>-1||(!!T.cs&&p.search(T.cs)>-1)}
+function hl(t,T){
+ return t.split(/([^]*)/).map(function(p,i){
+  if(i%2)return p;
+  p=p.replace(T.hw,'\uE00A$&\uE00B'); /* whole words: a stem like "neurosci" marks all of "Neuroscience" */
+  if(T.cs)p=p.split(/([^]*)/).map(function(q,j){return j%2?q:q.replace(T.cs,'$&')}).join('');
+  return p;
+ }).join('');
+}
+/* Sections as shown: with a topic selected, only matching items, and sections without any are left out. */
+function shown(v,V){
+ var T=v==='cv'&&topic?topicOf(topic):null;
+ return V.sections.map(function(s){
+  var it=T?s.items.filter(function(x){return hit(x,T)}).map(function(x){return hl(x,T)}):s.items;
+  return {s:s,items:it};
+ }).filter(function(x){return !T||x.items.length});
+}
+function setTopic(k){
+ var v=route();
+ if(k===topic||k===null){if(saved)open=saved;saved=null;topic=null;return}
+ if(!saved){saved={};for(var o in open)saved[o]=open[o]}
+ topic=k;
+ shown(v,view()).forEach(function(x){open[v+':'+x.s.key]=true});
+}
 function view(){var v=route();return v==='home'?null:D[lang][v]}
-function allOpen(){var v=route(),V=view();return !!V&&V.sections.every(function(s){return open[v+':'+s.key]})}
+function allOpen(){var v=route(),V=view();return !!V&&shown(v,V).every(function(x){return open[v+':'+x.s.key]})}
 function labels(){
  var u=UI[lang];
  $('#theme').textContent=theme()==='dark'?u.light:u.dark;
@@ -200,26 +246,40 @@ function render(){
   h='<div class="vbar"><a href="'+esc(V.pdf)+'" target="_blank" rel="noopener">'+esc(u.dl[v])+'</a>'+
     '<button type="button" class="lnk" id="all"></button></div>';
   if(V.lead)h+='<section class="lsec"><h2>'+esc(V.lead.title)+'</h2><p>'+fmt(V.lead.text)+'</p></section>';
-  h+='<div>'+V.sections.map(function(s){
-   var k=v+':'+s.key,o=!!open[k];
+  var S=shown(v,V),T=v==='cv'&&topic?topicOf(topic):null;
+  if(v==='cv'&&TOP.length){
+   var n=0;S.forEach(function(x){n+=x.items.length});
+   h+='<div class="topics ui" role="group" aria-labelledby="tlab"><p class="lab" id="tlab">'+esc(u.topics)+'</p><div class="chips">'+
+    TOP.map(function(t){return '<button type="button" class="chip" data-topic="'+t.key+'" aria-pressed="'+(t.key===topic)+'">'+esc(t[lang])+'</button>'}).join('')+
+    '</div><p class="fstat" aria-live="polite">'+(T?esc(u.showing(n,T[lang]))+'<button type="button" class="lnk" id="tclear">'+esc(u.showAll)+'</button>':'')+'</p></div>';
+  }
+  h+='<div>'+S.map(function(x){
+   var s=x.s,k=v+':'+s.key,o=!!open[k];
    return '<section class="sec'+(o?' open':'')+'" data-key="'+k+'">'+
     '<h2><button type="button" id="b-'+s.key+'" aria-expanded="'+o+'" aria-controls="p-'+s.key+'">'+
     '<span class="t">'+esc(s.title)+'</span>'+
-    '<span class="m">'+u.items(s.items.length)+'<span class="chev" aria-hidden="true"></span></span>'+
+    '<span class="m">'+(T?u.of(x.items.length,s.items.length):u.items(s.items.length))+'<span class="chev" aria-hidden="true"></span></span>'+
     '<span class="sum">'+esc(s.summary)+'</span></button></h2>'+
     '<div class="panel" id="p-'+s.key+'" role="region" aria-labelledby="b-'+s.key+'"><div class="pin">'+
     (s.note?'<p class="note">'+fmt(s.note)+'</p>':'')+
-    '<ul>'+s.items.map(li).join('')+'</ul></div></div></section>';
+    '<ul>'+x.items.map(li).join('')+'</ul></div></div></section>';
   }).join('')+'</div>';
  }
  $('#view').innerHTML=h;
  labels();
 }
 $('#view').addEventListener('click',function(e){
+ var ch=e.target.closest('.chip,#tclear');
+ if(ch){
+  var k=ch.id==='tclear'?null:ch.dataset.topic;setTopic(k);render();
+  var f=topic?document.querySelector('.chip[data-topic="'+topic+'"]'):(k&&document.querySelector('.chip[data-topic="'+k+'"]'))||document.querySelector('.chip');
+  if(f)f.focus({preventScroll:true});
+  return;
+ }
  var all=e.target.closest('#all');
  if(all){
   var v=route(),o=!allOpen();
-  view().sections.forEach(function(s){open[v+':'+s.key]=o});
+  shown(v,view()).forEach(function(x){open[v+':'+x.s.key]=o});
   document.querySelectorAll('.sec').forEach(function(sec){sec.classList.toggle('open',o);sec.querySelector('h2 button').setAttribute('aria-expanded',o)});
   labels();return;
  }
@@ -233,7 +293,7 @@ $('#theme').addEventListener('click',function(){
  root.dataset.theme=t;store.set('theme',t);labels();
 });
 if(dq){try{dq.addEventListener('change',labels)}catch(e){try{dq.addListener(labels)}catch(e2){}}}
-window.addEventListener('hashchange',function(){render();window.scrollTo(0,0)});
+window.addEventListener('hashchange',function(){if(topic&&route()!=='cv')setTopic(null);render();window.scrollTo(0,0)});
 var tt=$('#totop'),tick=false;
 function showTop(){tick=false;tt.classList.toggle('show',window.pageYOffset>700)}
 window.addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(showTop)}},{passive:true});

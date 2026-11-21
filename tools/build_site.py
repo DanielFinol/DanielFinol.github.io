@@ -92,6 +92,43 @@ SUMM = {
   lang="Español nativo; inglés nivel C2 (EF SET 95/100); francés con certificados DELF A1–A4.",
   mooc="Decenas de cursos de Stanford, Johns Hopkins, Boston University, deeplearning.ai y otras instituciones, en IA, aprendizaje automático, neurociencia y matemáticas.")}
 
+# Topic filter buttons on the full-CV view (hand-written). An item is shown for a topic when its text,
+# links' addresses excluded, matches one of the terms. 'ci': case-insensitive regular expressions
+# (written so they work in both Python and JavaScript; avoid \b next to accented letters).
+# 'cs': exact-case terms matched as whole words (e.g. AI, IA). Both languages share the same terms,
+# because the Spanish CV keeps many course titles in English. The build prints the matches per topic.
+TOPICS = [
+ dict(key='ai', en="Artificial intelligence", es="Inteligencia artificial",
+      ci=[r"artificial intelligence", r"inteligencia artificial", r"machine learning", r"aprendizaje automático",
+          r"deep learning", r"neural network", r"redes neuronales", r"neuroai", r"scikit-learn", r"alignment"],
+      cs=["AI", "IA", "GenAI"]),
+ dict(key='data', en="Data science", es="Ciencia de datos",
+      ci=[r"data scien", r"ciencia de datos", r"statistic", r"estadístic", r"data study",
+          r"social data", r"interpreting data", r"time series", r"visuali[sz]ation", r"analytics",
+          r"network analysis", r"network science", r"machine learning", r"scikit-learn", r"\bsql\b", r"\br programming"],
+      cs=[]),
+ dict(key='teach', en="Teaching", es="Docencia",
+      ci=[r"\bteacher", r"teaching assistant", r"teaching and learning", r"teaching update", r"\bprofess?or",
+          r"\btaught", r"preparador docente", r"perfeccionamiento docente", r"enseñanza y aprendizaje", r"enseñado"],
+      cs=[]),
+ dict(key='neuro', en="Neuroscience", es="Neurociencia",
+      ci=[r"neurosci", r"neurocienc", r"neuroai", r"neurons", r"\bbrain", r"fmri", r"psychiatry", r"cognitive"],
+      cs=[]),
+ dict(key='law', en="AI ethics, law & safety", es="IA: ética, derecho y seguridad",
+      ci=[r"\blaw\b", r"\bderecho", r"\blegal\b", r"jurídic", r"intellectual property", r"propiedad intelectual",
+          r"copyright", r"transparen", r"\bethic", r"ai safety", r"sécurité de l.ia", r"alignment", r"transformative ai"],
+      cs=[]),
+ dict(key='math', en="Mathematics & optimization", es="Matemáticas y optimización",
+      ci=[r"optimi[sz]", r"optimizac", r"mathematic", r"matemátic", r"calculus i\b", r"cálculo i\b", r"calculus:",
+          r"differential equations", r"stochastic", r"estocástic", r"multidimensional", r"surrogate", r"sustitutos",
+          r"metamodel", r"algorithms: design"],
+      cs=[]),
+ dict(key='prog', en="Programming", es="Programación",
+      ci=[r"programming", r"programación", r"python", r"matlab", r"\bsql\b", r"full-stack", r"data structures",
+          r"estructuras de datos", r"marat[oó]n", r"marathon", r"\bmpi\b", r"script ?writer"],
+      cs=[r"C(?=[\ue000-\ue00b]*:)"]),
+]
+
 import html as _h
 MK=dict(B0='',B1='',I0='',I1='',A0='',A1='',A2='',S0='',S1='')
 URLRE=re.compile(r'https?://[^\s<]*[^\s<.,;)]')
@@ -338,6 +375,14 @@ for lang in ('en', 'es'):
 # Email and phone are stored as reversed character codes and assembled by the page's script,
 # so neither appears as text in index.html.
 D['mail'] = [ord(c) for c in EMAIL][::-1]
+D['topics'] = TOPICS
+def _topic_hits(T, items):
+    ci = re.compile('|'.join(T['ci']), re.I)
+    cs = re.compile(r'(?<![A-Za-zÀ-ÿ])(?:' + '|'.join(T['cs']) + r')(?![A-Za-zÀ-ÿ])') if T['cs'] else None
+    plain = lambda t: re.sub('[\ue000-\ue00b]', '', re.sub('\ue004[^\ue005]*\ue005', ' ', t))
+    return sum(1 for t in items if ci.search(plain(t)) or (cs and cs.search(plain(t))))
+for lang in ('en', 'es'):
+    print(lang, 'topics', [(T['key'], _topic_hits(T, [i for s in D[lang]['cv']['sections'] for i in s['items']])) for T in TOPICS])
 tpl = Path(ARGS.template).read_text(encoding='utf-8')
 assert tpl.count('/*DATA*/null') == 1, 'template placeholder missing'
 out = tpl.replace('/*DATA*/null', json.dumps(D, ensure_ascii=False).replace('</', '<\\/'))
