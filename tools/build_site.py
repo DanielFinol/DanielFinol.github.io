@@ -125,7 +125,7 @@ TOPICS = [
       cs=[]),
  dict(key='prog', en="Programming", es="Programación",
       ci=[r"programming", r"programación", r"python", r"matlab", r"\bsql\b", r"full-stack", r"data structures",
-          r"estructuras de datos", r"marat[oó]n", r"marathon", r"\bmpi\b"],
+          r"estructuras de datos", r"marat[oó]n", r"marathon", r"\bmpi\b", r"script ?writer"],
       cs=[r"C(?=[\ue000-\ue00b]*:)"]),
 ]
 
