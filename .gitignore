@@ -1,0 +1,3 @@
+# Private contact details used by tools/build_site.py (never commit)
+tools/contact.json
+__pycache__/
