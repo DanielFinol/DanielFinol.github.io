@@ -1,3 +1,7 @@
 theme: jekyll-theme-tactile
 title: Daniel Finol-González's CV + Portfolio Page
 description: Daniel Finol-González's CV & Portfolio Page
+
+exclude:
+  - tools
+  - HANDOFF.md
