@@ -76,6 +76,7 @@ To change wording or design: hand-written text lives in `tools/build_site.py` (l
 
 - English CV: the master's average reads "(97,8%)" with a decimal comma; the Spanish CV uses 97.8.
 - The résumé PDFs say a master's average of 19.56/20, while the CVs now say 19.6/20.
+- The hand-written page text says "14 years" of graduate teaching and a 98% average (owner's decision, 2026-11-27). The PDFs still say 13 years (résumé Summary) and 97.8%, and the page shows the PDF-derived text as is, so those spots still read 13 / 97.8 until the PDFs are updated.
 - All four PDFs contain the owner's email and phone in plain text, so bots can read them from the PDFs even though the page hides them.
 - The résumé PDF Summary paragraph still carries wording the owner chose to keep ("published machine-learning research", "Known for explaining ..."); the interactive résumé mirrors the PDF.
 

@@ -72,7 +72,7 @@ TITLES = {
    mooc="Cursos en línea abiertos masivos (MOOCs)")}
 SUMM = {
  'en': dict(
-  edu="Master of Applied Computer Science (grade average 97.8%) and B.Sc. in Computer Science, ranked first in the class of 2001, both at Universidad del Zulia.",
+  edu="Master of Applied Computer Science (grade average 98%) and B.Sc. in Computer Science, ranked first in the class of 2001, both at Universidad del Zulia.",
   exp="Lecturer in programming and data science; Aggregate Professor in the Applied Computer Science Master's at Universidad del Zulia (2005–2018); teaching assistant at Neuromatch Academy.",
   pub="Articles and book chapters on artificial intelligence, algorithmic transparency and intellectual property, plus research on global optimization with surrogate models.",
   courses="AI safety, NeuroAI, data science bootcamps and workshops with BlueDot Impact, Neuromatch Academy, The Alan Turing Institute, MIT, Cambridge and others.",
@@ -82,7 +82,7 @@ SUMM = {
   lang="Native Spanish; English at C2 level (EF SET 95/100); French with DELF A1–A4 certificates.",
   mooc="Dozens of courses from Stanford, Johns Hopkins, Boston University, deeplearning.ai and other institutions, in AI, machine learning, neuroscience and mathematics."),
  'es': dict(
-  edu="Magíster en Computación Aplicada (promedio 97.8%) y Licenciado en Computación, Primer Lugar de la Promoción 2001, ambos en la Universidad del Zulia.",
+  edu="Magíster en Computación Aplicada (promedio 98%) y Licenciado en Computación, Primer Lugar de la Promoción 2001, ambos en la Universidad del Zulia.",
   exp="Profesor de programación y ciencia de datos; Profesor Agregado de la Maestría en Computación Aplicada de la Universidad del Zulia (2005–2018); asistente docente en Neuromatch Academy.",
   pub="Artículos y capítulos de libro sobre inteligencia artificial, transparencia algorítmica y propiedad intelectual; investigación en optimización global con modelos sustitutos.",
   courses="Seguridad de la IA, NeuroAI, bootcamps de ciencia de datos y talleres con BlueDot Impact, Neuromatch Academy, The Alan Turing Institute, MIT, Cambridge y otros.",
@@ -293,14 +293,14 @@ RTITLES = {'en': dict(summary='Summary',skills='Skills',exp='Experience',edu='Ed
 RSUMM = {
  'en': dict(
   skills="Python (pandas, scikit-learn), C, MATLAB/Octave and SQL; supervised and unsupervised learning, neural networks and surrogate models; DataCamp-assessed in the 98th to 100th percentile.",
-  exp="Python and data science at Universidad Alberto Hurtado (2026), survey programming at Ipsos, Neuromatch Academy, and 13 years as Aggregate Professor at Universidad del Zulia.",
-  edu="MSc in Applied Computer Science (97.8% average) and BSc in Computer Science, ranked first in the class of 2001, both at Universidad del Zulia.",
+  exp="Python and data science at Universidad Alberto Hurtado (2026), survey programming at Ipsos, Neuromatch Academy, and 14 years as Aggregate Professor at Universidad del Zulia.",
+  edu="MSc in Applied Computer Science (98% average) and BSc in Computer Science, ranked first in the class of 2001, both at Universidad del Zulia.",
   applied="Alan Turing Institute Data Study Group, data science and full-stack bootcamps, programming-contest podiums, and 8 papers and book chapters.",
   courses="Stanford, deeplearning.ai, Hinton and Inria machine-learning courses, recent AI-safety and Gen AI courses, and 30+ MOOCs."),
  'es': dict(
   skills="Python (pandas, scikit-learn), C, MATLAB/Octave y SQL; aprendizaje supervisado y no supervisado, redes neuronales y modelos sustitutos; evaluaciones DataCamp entre los percentiles 98 y 100.",
-  exp="Python y ciencia de datos en la Universidad Alberto Hurtado (2026), programación de encuestas en Ipsos, Neuromatch Academy y 13 años como Profesor Agregado en la Universidad del Zulia.",
-  edu="Magíster en Computación Aplicada (promedio 97,8%) y Licenciado en Computación, Primer Lugar de la promoción 2001, ambos en la Universidad del Zulia.",
+  exp="Python y ciencia de datos en la Universidad Alberto Hurtado (2026), programación de encuestas en Ipsos, Neuromatch Academy y 14 años como Profesor Agregado en la Universidad del Zulia.",
+  edu="Magíster en Computación Aplicada (promedio 98%) y Licenciado en Computación, Primer Lugar de la promoción 2001, ambos en la Universidad del Zulia.",
   applied="Data Study Group del Alan Turing Institute, bootcamps de ciencia de datos y Python full stack, podios en maratones de programación y 8 artículos y capítulos.",
   courses="Cursos de machine learning de Stanford, deeplearning.ai, Hinton e Inria, cursos recientes de seguridad de la IA e IA generativa, y más de 30 MOOCs.")}
 
@@ -339,18 +339,18 @@ def parse_resume(lang):
 HOME = {
  'en': dict(
   sub="Computer & Data Scientist · Python · Machine Learning",
-  lead="Computer and data scientist (MSc, 97.8% average) with 13 years of graduate teaching in machine learning, statistics and programming.",
+  lead="Computer and data scientist (MSc, 98% average) with 14 years of graduate teaching in machine learning, statistics and programming.",
   para="Led a funded research project on machine learning and co-authored papers on AI and law. Taught Python and data science in Chile; spent a year at Ipsos, an English-language global organization, programming surveys. Known for explaining complex technical ideas clearly to technical and non-technical audiences. Recent training in AI safety and generative AI. Bilingual: native Spanish, English C2.",
   cards=dict(resume="The short version: skills, experience, education and selected projects. Two pages.",
              cv="The complete record: every publication, award, course and MOOC.")),
  'es': dict(
   sub="Científico de Computación y Datos · Python · Machine Learning",
-  lead="Científico de computación y datos (Magíster, promedio 97,8%) con 13 años de docencia de maestría en machine learning, estadística y programación.",
+  lead="Científico de computación y datos (Magíster, promedio 98%) con 14 años de docencia de maestría en machine learning, estadística y programación.",
   para="Dirigí un proyecto de investigación financiado sobre machine learning y soy coautor de artículos sobre IA y derecho. Enseñé Python y ciencia de datos en Chile; trabajé un año en Ipsos, una organización global de habla inglesa, programando encuestas. Destaco por explicar con claridad conceptos técnicos complejos a públicos técnicos y no técnicos. Formación reciente en seguridad de la IA e IA generativa. Bilingüe: español nativo, inglés C2.",
   cards=dict(resume="La versión corta: habilidades, experiencia, formación y proyectos seleccionados. Dos páginas.",
              cv="El registro completo: todas las publicaciones, distinciones, cursos y MOOCs."))}
-RSUB = {'en': "Computer & Data Scientist · Python · Machine Learning · Spanish (native) / English (C2)",
-        'es': "Científico de Computación y Datos · Python · Machine Learning · Español (nativo) / Inglés (C2)"}
+RSUB = {'en': "Computer & Data Scientist · Python · Machine Learning",
+        'es': "Científico de Computación y Datos · Python · Machine Learning"}
 
 # ---------------------------------------------------------------------------
 # Assemble the page data and write index.html
