@@ -349,6 +349,17 @@ HOME = {
   para="Dirigí un proyecto de investigación financiado sobre machine learning y soy coautor de artículos sobre IA y derecho. Enseñé Python y ciencia de datos en Chile; trabajé un año en Ipsos, una organización global de habla inglesa, programando encuestas. Destaco por explicar con claridad conceptos técnicos complejos a públicos técnicos y no técnicos. Formación reciente en seguridad de la IA e IA generativa. Bilingüe: español nativo, inglés C2.",
   cards=dict(resume="La versión corta: habilidades, experiencia, formación y proyectos seleccionados. Dos páginas.",
              cv="El registro completo: todas las publicaciones, distinciones, cursos y MOOCs."))}
+# Page-only corrections to the résumé Summary paragraph taken from the PDFs (owner's decision,
+# 2026-11-27: 14 years, 98%). The build fails if a phrase is no longer found, e.g. once the PDF is
+# updated; then remove the entry.
+RSUMMARY_FIX = {
+ 'en': [("(97.8% average)", "(98% average)"), ("for 13 years", "for 14 years")],
+ 'es': [("(promedio 97,8%)", "(promedio 98%)"), ("Durante 13 años", "Durante 14 años")]}
+def fix_summary(lang, text):
+    for old, new in RSUMMARY_FIX[lang]:
+        assert text.count(old) == 1, f'RSUMMARY_FIX[{lang!r}]: {old!r} not found in the résumé Summary'
+        text = text.replace(old, new)
+    return text
 RSUB = {'en': "Computer & Data Scientist · Python · Machine Learning",
         'es': "Científico de Computación y Datos · Python · Machine Learning"}
 
@@ -368,7 +379,7 @@ for lang in ('en', 'es'):
         cv=dict(sub=CVSUB[lang], pdf=CV_PDF.format(lang=lang),
                 sections=[dict(key=k, title=TITLES[lang][k], summary=SUMM[lang][k], items=secs[k]['items'], note=secs[k]['note']) for k in order]),
         resume=dict(sub=RSUB[lang], pdf=RESUME_PDF.format(lang=lang),
-                lead=dict(title=RTITLES[lang]['summary'], text=rs['summary']['text']),
+                lead=dict(title=RTITLES[lang]['summary'], text=fix_summary(lang, rs['summary']['text'])),
                 sections=[dict(key=k, title=RTITLES[lang][k], summary=RSUMM[lang][k], items=rs[k]['items'], note='') for k in RORDER[1:]]))
     print(lang, 'cv', [(s['key'], len(s['items'])) for s in D[lang]['cv']['sections']])
     print(lang, 'resume', [(s['key'], len(s['items'])) for s in D[lang]['resume']['sections']])
